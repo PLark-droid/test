@@ -1,4 +1,5 @@
 import { CalendarService } from './calendarService.js';
+import { MockCalendarService } from './mockCalendarService.js';
 import { TimeSlotFinder } from '../utils/timeSlotFinder.js';
 import { getLarkConfig } from '../config/lark.js';
 import { AvailableSlot, TimeSlot } from '../types/calendar.js';
@@ -6,6 +7,7 @@ import { AvailableSlot, TimeSlot } from '../types/calendar.js';
 export interface MeetingSuggestionOptions {
   daysAhead?: number;
   maxSuggestions?: number;
+  useMockData?: boolean;
 }
 
 export interface MeetingSuggestion {
@@ -15,15 +17,44 @@ export interface MeetingSuggestion {
     start: string;
     end: string;
   };
+  isDemo?: boolean;
 }
 
 export class MeetingSuggestionService {
-  private calendarService: CalendarService;
+  private calendarService: CalendarService | MockCalendarService;
   private timeSlotFinder: TimeSlotFinder;
-  private config = getLarkConfig();
+  private config: ReturnType<typeof getLarkConfig>;
+  private isDemo: boolean;
 
-  constructor() {
-    this.calendarService = new CalendarService();
+  constructor(useMockData: boolean = false) {
+    // Lark認証情報がない場合は自動的にデモモードに
+    const hasLarkCredentials = process.env.LARK_APP_ID && process.env.LARK_APP_SECRET;
+    this.isDemo = useMockData || !hasLarkCredentials;
+
+    if (this.isDemo) {
+      console.log('🎭 デモモードで起動（モックデータを使用）\n');
+      this.calendarService = new MockCalendarService();
+    } else {
+      this.calendarService = new CalendarService();
+    }
+
+    // デモモードでも設定を試みるが、エラーは無視
+    try {
+      this.config = getLarkConfig();
+    } catch {
+      // 設定が取得できない場合はデフォルト値を使用
+      this.config = {
+        appId: 'demo',
+        appSecret: 'demo',
+        calendarId: 'primary',
+        workingHours: {
+          start: process.env.WORKING_HOURS_START || '09:00',
+          end: process.env.WORKING_HOURS_END || '18:00',
+        },
+        meetingDurationMinutes: parseInt(process.env.MEETING_DURATION_MINUTES || '60', 10),
+      };
+    }
+
     this.timeSlotFinder = new TimeSlotFinder(
       this.config.workingHours,
       this.config.meetingDurationMinutes
@@ -61,11 +92,26 @@ export class MeetingSuggestionService {
         start: startDate.toISOString(),
         end: endDate.toISOString(),
       },
+      isDemo: this.isDemo,
     };
   }
 
   formatSuggestions(suggestion: MeetingSuggestion): string {
-    let output = `空き時間候補 (${suggestion.searchPeriod.start.split('T')[0]} 〜 ${suggestion.searchPeriod.end.split('T')[0]})\n\n`;
+    let output = '';
+
+    if (suggestion.isDemo) {
+      output += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+      output += '   🎭 デモモード実行中\n';
+      output += '   サンプルデータを使用しています\n';
+      output += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+    }
+
+    output += `空き時間候補 (${suggestion.searchPeriod.start.split('T')[0]} 〜 ${suggestion.searchPeriod.end.split('T')[0]})\n\n`;
+
+    if (suggestion.suggestedSlots.length === 0) {
+      output += '⚠️  指定期間内に十分な空き時間が見つかりませんでした。\n';
+      return output;
+    }
 
     output += '【おすすめの候補日時】\n';
     suggestion.suggestedSlots.forEach((slot, index) => {

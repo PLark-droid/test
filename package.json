@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx src/index.ts",
+    "tutorial": "tsx src/index.ts --tutorial",
     "build": "tsc",
     "test": "vitest",
     "lint": "eslint . --ext .ts,.tsx",
