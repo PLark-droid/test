@@ -56,10 +56,13 @@ export function showLarkSetupTutorial(): void {
 
   console.log('3. 以下の権限をONにする:');
   console.log('   ✓ 获取日历信息（カレンダー情報の取得）');
-  console.log('   ✓ 获取日历日程信息（カレンダーイベント情報の取得）\n');
+  console.log('   ✓ 获取日历日程信息（カレンダーイベント情報の取得）');
+  console.log('   ✓ 获取与发送单聊、群组消息（メッセージ送信）← チャット送信に必要\n');
 
   console.log('   具体的な権限スコープ:');
-  console.log('   • calendar:calendar.event:readonly\n');
+  console.log('   • calendar:calendar.event:readonly');
+  console.log('   • im:message');
+  console.log('   • im:message:send_as_bot\n');
 
   console.log('4. 「保存」をクリック\n');
 
@@ -78,7 +81,24 @@ export function showLarkSetupTutorial(): void {
   console.log('5. 承認されるまで待つ（通常数分〜数時間）\n');
 
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log('⚙️  ステップ6: このアプリに認証情報を設定');
+  console.log('👤 ステップ6: あなたのUser IDを取得（チャット送信用）');
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+
+  console.log('チャットに送信するには、あなたのLark User ID（Open ID）が必要です。\n');
+
+  console.log('取得方法:');
+  console.log('1. Larkアプリで「マイページ」を開く\n');
+
+  console.log('2. 自分のプロフィールをクリック\n');
+
+  console.log('3. 「詳細情報」または「ユーザーID」をコピー\n');
+
+  console.log('   または、開発者コンソールで:');
+  console.log('   - 左メニュー「开发配置」→「通讯录权限」');
+  console.log('   - テストユーザーとして自分を追加してIDを確認\n');
+
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.log('⚙️  ステップ7: このアプリに認証情報を設定');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
   console.log('1. プロジェクトディレクトリで .env ファイルを作成:');
@@ -91,6 +111,8 @@ export function showLarkSetupTutorial(): void {
   console.log('   LARK_APP_ID=cli_xxxxxxxxxx      # ← ステップ3で取得');
   console.log('   LARK_APP_SECRET=xxxxxxxxxxxxx   # ← ステップ3で取得');
   console.log('   LARK_CALENDAR_ID=primary        # デフォルトのまま');
+  console.log('   LARK_USER_ID=ou_xxxxxxxxxx      # ← ステップ6で取得');
+  console.log('   SEND_TO_CHAT=true               # チャット送信を有効化');
   console.log('   ```\n');
 
   console.log('3. アプリを実行:');
