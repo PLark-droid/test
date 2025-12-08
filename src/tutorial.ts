@@ -50,65 +50,74 @@ export function showLarkSetupTutorial(): void {
   console.log('✅ ステップ4: 権限設定（最重要！）');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
+  console.log('💡 あなたのLarkの言語設定を確認:');
+  console.log('   🇺🇸 英語版 → 英語の検索キーワードを使用');
+  console.log('   🇨🇳 中国語版 → 中国語の検索キーワードを使用\n');
+
   console.log('📌 画面左メニューから以下をクリック:');
-  console.log('   「权限管理」（権限管理）\n');
+  console.log('   「Permissions」または「权限管理」\n');
   console.log('   ↓');
-  console.log('   ページ上部の検索ボックスが表示されます\n');
+  console.log('   ページ上部に検索ボックスが表示されます\n');
 
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
   console.log('🔍 【権限1/3】カレンダー情報の取得');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
-  console.log('1. ページ上部の検索ボックスに以下をコピペ:');
+  console.log('検索ボックスに以下をコピペ:\n');
+
+  console.log('🇺🇸 英語版の場合:');
+  console.log('   ┌─────────────────────────────────────┐');
+  console.log('   │ calendar information as the app     │');
+  console.log('   └─────────────────────────────────────┘\n');
+
+  console.log('🇨🇳 中国語版の場合:');
   console.log('   ┌─────────────────────────────┐');
-  console.log('   │ 日历                        │  ← これをコピー');
+  console.log('   │ 以应用身份读取日历信息      │');
   console.log('   └─────────────────────────────┘\n');
 
-  console.log('2. 検索結果に「日历」セクションが表示される\n');
-
-  console.log('3. 以下の項目を探してチェック:');
-  console.log('   ┌──────────────────────────────────────────┐');
-  console.log('   │ ☐ 查看、评论日程                         │');
-  console.log('   │ ☐ 以应用身份读取日历信息                 │ ← これ！');
-  console.log('   │ ☐ 查看、创建、编辑日程                   │');
-  console.log('   └──────────────────────────────────────────┘\n');
-
-  console.log('   探すテキスト: 「以应用身份读取日历信息」');
-  console.log('   英語名: Access calendar and schedule information as the app\n');
+  console.log('チェックする項目:');
+  console.log('   🇺🇸 Access calendar and schedule information as the app');
+  console.log('   🇨🇳 以应用身份读取日历信息\n');
 
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-  console.log('🔍 【権限2/3】メッセージ読み取り');
+  console.log('🔍 【権限2/3】メッセージ送受信');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
-  console.log('1. 検索ボックスをクリアして、以下をコピペ:');
+  console.log('検索ボックスに以下をコピペ:\n');
+
+  console.log('🇺🇸 英語版の場合:');
+  console.log('   ┌─────────────────────────────────────┐');
+  console.log('   │ Obtain and send messages            │');
+  console.log('   └─────────────────────────────────────┘\n');
+
+  console.log('🇨🇳 中国語版の場合:');
   console.log('   ┌─────────────────────────────┐');
-  console.log('   │ 获取与发送                   │  ← これをコピー');
+  console.log('   │ 获取与发送单聊、群组消息    │');
   console.log('   └─────────────────────────────┘\n');
 
-  console.log('2. 検索結果から以下を探してチェック:');
-  console.log('   ┌──────────────────────────────────────────┐');
-  console.log('   │ ☐ 获取与发送单聊、群组消息               │ ← これ！');
-  console.log('   └──────────────────────────────────────────┘\n');
-
-  console.log('   探すテキスト: 「获取与发送单聊、群组消息」');
-  console.log('   英語名: Obtain and send messages in private and group chats\n');
+  console.log('チェックする項目:');
+  console.log('   🇺🇸 Obtain and send messages in private and group chats');
+  console.log('   🇨🇳 获取与发送单聊、群组消息\n');
 
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
   console.log('🔍 【権限3/3】Bot送信権限');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
-  console.log('1. 検索ボックスに以下をコピペ:');
+  console.log('検索ボックスに以下をコピペ:\n');
+
+  console.log('🇺🇸 英語版の場合:');
+  console.log('   ┌─────────────────────────────────────┐');
+  console.log('   │ Send messages as the app            │');
+  console.log('   └─────────────────────────────────────┘\n');
+
+  console.log('🇨🇳 中国語版の場合:');
   console.log('   ┌─────────────────────────────┐');
-  console.log('   │ 以应用的身份发送消息         │  ← これをコピー');
+  console.log('   │ 以应用的身份发送消息        │');
   console.log('   └─────────────────────────────┘\n');
 
-  console.log('2. 検索結果から以下を探してチェック:');
-  console.log('   ┌──────────────────────────────────────────┐');
-  console.log('   │ ☐ 以应用的身份发送消息                   │ ← これ！');
-  console.log('   └──────────────────────────────────────────┘\n');
-
-  console.log('   探すテキスト: 「以应用的身份发送消息」');
-  console.log('   英語名: Send messages as the app\n');
+  console.log('チェックする項目:');
+  console.log('   🇺🇸 Send messages as the app');
+  console.log('   🇨🇳 以应用的身份发送消息\n');
 
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
   console.log('✅ チェック完了後');
