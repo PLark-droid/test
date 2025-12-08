@@ -1,5 +1,6 @@
 import { CalendarService } from './calendarService.js';
 import { MockCalendarService } from './mockCalendarService.js';
+import { MultiPersonCalendarService } from './multiPersonCalendarService.js';
 import { TimeSlotFinder } from '../utils/timeSlotFinder.js';
 import { getLarkConfig } from '../config/lark.js';
 import { AvailableSlot, TimeSlot } from '../types/calendar.js';
@@ -8,6 +9,7 @@ export interface MeetingSuggestionOptions {
   daysAhead?: number;
   maxSuggestions?: number;
   useMockData?: boolean;
+  userIds?: string[]; // 複数人の場合のユーザーID
 }
 
 export interface MeetingSuggestion {
@@ -64,6 +66,7 @@ export class MeetingSuggestionService {
   async suggestMeetingTimes(options: MeetingSuggestionOptions = {}): Promise<MeetingSuggestion> {
     const daysAhead = options.daysAhead || 7;
     const maxSuggestions = options.maxSuggestions || 5;
+    const userIds = options.userIds || [];
 
     const startDate = new Date();
     startDate.setHours(0, 0, 0, 0);
@@ -72,7 +75,21 @@ export class MeetingSuggestionService {
     endDate.setDate(endDate.getDate() + daysAhead);
     endDate.setHours(23, 59, 59, 999);
 
-    const events = await this.calendarService.getEvents(startDate, endDate);
+    let events;
+
+    // 複数人の場合は統合カレンダーサービスを使用
+    if (userIds.length > 0) {
+      const multiPersonService = new MultiPersonCalendarService(this.isDemo);
+      events = await multiPersonService.getMultiPersonEvents(startDate, endDate, {
+        userIds,
+      });
+
+      if (userIds.length > 1 && !this.isDemo) {
+        console.log(`📅 ${userIds.length}人のカレンダーを確認中...`);
+      }
+    } else {
+      events = await this.calendarService.getEvents(startDate, endDate);
+    }
 
     const availableSlots = this.timeSlotFinder.findAvailableSlots(
       events,

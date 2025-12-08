@@ -7,6 +7,7 @@
 import 'dotenv/config';
 import { MeetingSuggestionService } from './services/meetingSuggestionService.js';
 import { MessageService } from './services/messageService.js';
+import { MultiPersonCalendarService } from './services/multiPersonCalendarService.js';
 import { showLarkSetupTutorial } from './tutorial.js';
 
 export async function main(): Promise<void> {
@@ -32,11 +33,22 @@ export async function main(): Promise<void> {
 
     const service = new MeetingSuggestionService();
 
+    // 複数人モードのチェック（デモ用）
+    const multiPersonDemo = args.includes('--multi');
+    let userIds: string[] = [];
+
+    if (multiPersonDemo) {
+      // デモ用の複数ユーザーID
+      userIds = ['ou_demo_user1', 'ou_demo_user2'];
+      console.log('👥 複数人モード: 2人のカレンダーを確認します\n');
+    }
+
     console.log('カレンダーを確認中...\n');
 
     const suggestions = await service.suggestMeetingTimes({
       daysAhead: 7,
       maxSuggestions: 5,
+      userIds: userIds.length > 0 ? userIds : undefined,
     });
 
     const formattedOutput = service.formatSuggestions(suggestions);
