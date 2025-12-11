@@ -47,91 +47,84 @@ export function showLarkSetupTutorial(): void {
   console.log('   • App Secret: クリックして表示 → コピー\n');
 
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log('✅ ステップ4: 権限設定（最重要！）');
+  console.log('✅ ステップ4: 権限設定（APIスコープ）');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
-  console.log('💡 あなたのLarkの言語設定を確認:');
-  console.log('   🇺🇸 英語版 → 英語の検索キーワードを使用');
-  console.log('   🇨🇳 中国語版 → 中国語の検索キーワードを使用\n');
+  console.log('このアプリには3つのAPIスコープが必要です。');
+  console.log('Developer Consoleの「权限管理」(Permissions) で設定してください。\n');
 
   console.log('📌 画面左メニューから以下をクリック:');
-  console.log('   「Permissions」または「权限管理」\n');
-  console.log('   ↓');
-  console.log('   ページ上部に検索ボックスが表示されます\n');
+  console.log('   「权限管理」(Permissions)\n');
 
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-  console.log('🔍 【権限1/3】カレンダー情報の取得');
+  console.log('🔍 【スコープ1/3】カレンダー読み取り');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
-  console.log('検索ボックスに以下をコピペ:\n');
-
-  console.log('🇺🇸 英語版の場合:');
-  console.log('   ┌─────────────────────────────────────┐');
-  console.log('   │ calendar information as the app     │');
-  console.log('   └─────────────────────────────────────┘\n');
-
-  console.log('🇨🇳 中国語版の場合:');
+  console.log('スコープ識別子:');
   console.log('   ┌─────────────────────────────┐');
-  console.log('   │ 以应用身份读取日历信息      │');
+  console.log('   │ calendar:calendar:readonly  │');
   console.log('   └─────────────────────────────┘\n');
 
-  console.log('チェックする項目:');
+  console.log('設定方法:');
+  console.log('   1. 検索ボックスに "calendar" と入力');
+  console.log('   2. Calendar セクションを展開');
+  console.log('   3. アプリ身分でのカレンダー読み取り権限をチェック\n');
+
+  console.log('UI表示例:');
   console.log('   🇺🇸 Access calendar and schedule information as the app');
   console.log('   🇨🇳 以应用身份读取日历信息\n');
 
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-  console.log('🔍 【権限2/3】メッセージ送受信');
+  console.log('🔍 【スコープ2/3】メッセージ送受信');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
-  console.log('検索ボックスに以下をコピペ:\n');
-
-  console.log('🇺🇸 英語版の場合:');
-  console.log('   ┌─────────────────────────────────────┐');
-  console.log('   │ Obtain and send messages            │');
-  console.log('   └─────────────────────────────────────┘\n');
-
-  console.log('🇨🇳 中国語版の場合:');
+  console.log('スコープ識別子:');
   console.log('   ┌─────────────────────────────┐');
-  console.log('   │ 获取与发送单聊、群组消息    │');
+  console.log('   │ im:message                  │');
   console.log('   └─────────────────────────────┘\n');
 
-  console.log('チェックする項目:');
+  console.log('設定方法:');
+  console.log('   1. 検索ボックスに "message" と入力');
+  console.log('   2. Messaging セクションを展開');
+  console.log('   3. メッセージ取得・送信権限をチェック\n');
+
+  console.log('UI表示例:');
   console.log('   🇺🇸 Obtain and send messages in private and group chats');
   console.log('   🇨🇳 获取与发送单聊、群组消息\n');
 
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-  console.log('🔍 【権限3/3】Bot送信権限');
+  console.log('🔍 【スコープ3/3】Bot送信');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
-  console.log('検索ボックスに以下をコピペ:\n');
+  console.log('スコープ識別子:');
+  console.log('   ┌─────────────────────────────────┐');
+  console.log('   │ im:message:send_as_bot          │');
+  console.log('   └─────────────────────────────────┘\n');
 
-  console.log('🇺🇸 英語版の場合:');
-  console.log('   ┌─────────────────────────────────────┐');
-  console.log('   │ Send messages as the app            │');
-  console.log('   └─────────────────────────────────────┘\n');
+  console.log('設定方法:');
+  console.log('   1. 検索ボックスに "send as bot" と入力');
+  console.log('   2. Messaging セクションを展開');
+  console.log('   3. アプリとしてのメッセージ送信権限をチェック\n');
 
-  console.log('🇨🇳 中国語版の場合:');
-  console.log('   ┌─────────────────────────────┐');
-  console.log('   │ 以应用的身份发送消息        │');
-  console.log('   └─────────────────────────────┘\n');
-
-  console.log('チェックする項目:');
+  console.log('UI表示例:');
   console.log('   🇺🇸 Send messages as the app');
   console.log('   🇨🇳 以应用的身份发送消息\n');
 
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-  console.log('✅ チェック完了後');
+  console.log('✅ 設定完了');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
-  console.log('ページ右上の「保存」ボタンをクリック\n');
+  console.log('1. ページ右上の「保存」(Save) ボタンをクリック\n');
 
-  console.log('💡 確認方法:');
-  console.log('   ページをリロードして、3つの権限にチェックが入っていればOK！\n');
+  console.log('2. 確認方法:');
+  console.log('   ページをリロードして、3つのスコープにチェックが入っていればOK！\n');
 
-  console.log('⚠️  よくある間違い:');
-  console.log('   • 似た名前の権限を選んでしまう');
-  console.log('   • 「保存」を押し忘れる');
-  console.log('   → 必ず上記の完全一致テキストを検索して選択してください\n');
+  console.log('💡 重要:');
+  console.log('   スコープ識別子 (例: calendar:calendar:readonly) は言語設定に');
+  console.log('   関係なく常に同じです。UIの表示名は言語で変わります。\n');
+
+  console.log('📚 詳細なスコープ情報:');
+  console.log('   プロジェクトの PERMISSIONS.md を参照してください\n');
 
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('🚀 ステップ5: アプリを公開');

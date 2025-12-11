@@ -1,277 +1,202 @@
-# Larkアプリ権限設定ガイド
+# Larkアプリ権限設定ガイド（スコープ識別子版）
 
-## 🎯 このアプリに必要な権限（3つだけ！）
+## 🎯 このアプリに必要な権限スコープ（3つ）
 
-権限設定は**検索してチェックするだけ**で完了します。
+このアプリが動作するために必要なAPIスコープを設定します。
 
-**日本語版Lark（英語表示）でも、中国語版Feishu でも対応！**
-
----
-
-## 🌏 あなたのLarkの言語設定を確認
-
-Larkの言語設定によって表示される権限名が異なります：
-
-- 🇺🇸 **英語版 Lark**: 英語の権限名
-- 🇨🇳 **中国語版 Feishu**: 中国語の権限名
-- 🇯🇵 **日本語版 Lark**: 通常は英語表示
-
-**→ 以下、両方の検索キーワードを記載しています！**
+**Lark Developer Console の「権限管理」(Permissions) ページで設定してください。**
 
 ---
 
-## 📋 権限チェックリスト
+## 📋 必要なスコープ一覧
 
-### ✅ 権限1: カレンダー情報読み取り
+### 1. カレンダー読み取り権限
 
-#### 🇺🇸 英語版Lark で検索する場合
+**スコープ識別子:**
 ```
-Access calendar
-```
-または
-```
-calendar information as the app
+calendar:calendar:readonly
 ```
 
-**チェックする項目:**
-```
-Calendar
-  ☐ View and comment on events
-  ☑ Access calendar and schedule information as the app  ← これ！
-  ☐ View, create, and edit events
-```
+**説明:**
+- アプリの身分でカレンダー情報を読み取る
+- カレンダーイベント一覧の取得
+- 空き時間の検出に必要
 
-#### 🇨🇳 中国語版Feishu で検索する場合
-```
-以应用身份读取日历信息
-```
-
-**チェックする項目:**
-```
-日历
-  ☐ 查看、评论日程
-  ☑ 以应用身份读取日历信息  ← これ！
-  ☐ 查看、创建、编辑日程
-```
-
-**💡 見つけ方:**
-- セクション名: `Calendar` / `日历`
-- "app" というキーワードが含まれる項目を探す
+**Developer Consoleでの設定:**
+- カテゴリ: `Calendar` / `日历`
+- 探すキーワード: "calendar" で検索
+- 選択する項目: アプリ身分でのカレンダー読み取り権限
 
 ---
 
-### ✅ 权限2: メッセージ送受信
+### 2. メッセージ送受信権限
 
-#### 🇺🇸 英語版Lark で検索する場合
+**スコープ識別子:**
 ```
-Obtain and send
-```
-または
-```
-messages in private and group
+im:message
 ```
 
-**チェックする項目:**
-```
-Messaging
-  ☑ Obtain and send messages in private and group chats  ← これ！
-  ☐ Receive messages mentioning the bot in group chats
-```
+**説明:**
+- チャットメッセージの送受信
+- プライベートチャットとグループチャット両方
+- 結果をチャットに送信するために必要
 
-#### 🇨🇳 中国語版Feishu で検索する場合
-```
-获取与发送单聊、群组消息
-```
-
-**チェックする項目:**
-```
-消息与群组
-  ☑ 获取与发送单聊、群组消息  ← これ！
-  ☐ 接收群聊中@机器人消息事件
-```
-
-**💡 見つけ方:**
-- セクション名: `Messaging` / `消息与群组`
-- "Obtain" / "获取" というキーワードで始まる項目
+**Developer Consoleでの設定:**
+- カテゴリ: `Messaging` / `消息与群组`
+- 探すキーワード: "message" で検索
+- 選択する項目: メッセージ取得・送信権限
 
 ---
 
-### ✅ 权限3: Bot送信
+### 3. Bot送信権限
 
-#### 🇺🇸 英語版Lark で検索する場合
+**スコープ識別子:**
 ```
-Send messages as the app
-```
-または
-```
-messages as the app
+im:message:send_as_bot
 ```
 
-**チェックする項目:**
-```
-Messaging
-  ☐ Read messages sent to the bot in private chats
-  ☑ Send messages as the app  ← これ！
-```
+**説明:**
+- アプリ名義でメッセージを送信
+- Botとしてのメッセージ送信に必要
+- チャットへの自動送信機能に使用
 
-#### 🇨🇳 中国語版Feishu で検索する場合
-```
-以应用的身份发送消息
-```
-
-**チェックする項目:**
-```
-消息与群组
-  ☐ 读取用户发给机器人的单聊消息
-  ☑ 以应用的身份发送消息  ← これ！
-```
-
-**💡 見つけ方:**
-- セクション名: `Messaging` / `消息与群组`
-- "Send messages as" / "以应用的身份" というキーワードを探す
+**Developer Consoleでの設定:**
+- カテゴリ: `Messaging` / `消息与群组`
+- 探すキーワード: "send as bot" または "send_as_bot" で検索
+- 選択する項目: アプリとしてのメッセージ送信権限
 
 ---
 
-## 🔍 検索の使い方
+## 🔧 Developer Consoleでの設定手順
 
 ### ステップ1: 権限管理ページを開く
-1. アプリ詳細ページの左メニュー
-2. 「权限管理」をクリック
 
-### ステップ2: 検索ボックスを使う
-1. ページ上部に検索ボックスがあります
-2. 上記の検索キーワードをコピペ
-3. 検索結果から該当項目を探す
-4. チェックボックスをON
+1. [Lark Developer Console](https://open.feishu.cn/app) にアクセス
+2. 作成したアプリをクリック
+3. 左メニューから「权限管理」(Permissions) を選択
+
+### ステップ2: スコープを検索して追加
+
+権限ページ上部の検索ボックスを使用:
+
+**方法A: カテゴリから探す**
+1. `Calendar` セクションを展開
+2. カレンダー読み取り権限を探してチェック
+3. `Messaging` セクションを展開
+4. メッセージ関連の2つの権限をチェック
+
+**方法B: 検索機能を使う**
+1. 検索ボックスに "calendar" と入力
+2. 該当する権限を見つけてチェック
+3. 検索ボックスに "message" と入力
+4. 該当する権限を見つけてチェック
+5. 検索ボックスに "send as bot" と入力
+6. 該当する権限を見つけてチェック
 
 ### ステップ3: 保存
-1. ページ右上の「保存」をクリック
-2. リロードして確認
+
+1. ページ右上の「保存」(Save) ボタンをクリック
+2. ページをリロードして3つの権限にチェックが入っていることを確認
 
 ---
 
-## ⚡ クイックコピー用
+## 🔍 スコープ識別子とは？
 
-### 🇺🇸 英語版Larkの場合
+スコープ識別子は、Lark APIで使用される権限の正式な識別子です:
 
-権限設定時に以下を順番にコピペして検索：
+- **形式:** `カテゴリ:リソース:アクション`
+- **例:** `calendar:calendar:readonly`
+  - `calendar` = カテゴリ
+  - `calendar` = リソース
+  - `readonly` = アクション（読み取り専用）
 
-1. `calendar information as the app`
-2. `Obtain and send messages`
-3. `Send messages as the app`
-
-それぞれチェック → 保存 で完了！
-
-### 🇨🇳 中国語版Feishuの場合
-
-1. `以应用身份读取日历信息`
-2. `获取与发送单聊、群组消息`
-3. `以应用的身份发送消息`
-
-それぞれチェック → 保存 で完了！
+Developer ConsoleのUIは言語設定によって表示が変わりますが、スコープ識別子は常に同じです。
 
 ---
 
-## ❌ よくある間違い
+## 📊 権限の対応表
 
-### 間違い1: 似た名前の権限を選んでしまう
+| スコープ識別子 | 英語UI表示例 | 中国語UI表示例 | 用途 |
+|---------------|-------------|---------------|------|
+| `calendar:calendar:readonly` | Access calendar and schedule information as the app | 以应用身份读取日历信息 | カレンダー読み取り |
+| `im:message` | Obtain and send messages in private and group chats | 获取与发送单聊、群组消息 | メッセージ送受信 |
+| `im:message:send_as_bot` | Send messages as the app | 以应用的身份发送消息 | Bot送信 |
 
-**英語版の場合:**
-```
-❌ View, create, and edit events
-✅ Access calendar and schedule information as the app  ← これが正解
-```
-**ポイント:** "as the app" というフレーズが入っているものを選ぶ
-
-**中国語版の場合:**
-```
-❌ 查看、创建、编辑日程
-✅ 以应用身份读取日历信息  ← これが正解
-```
-**ポイント:** "以应用身份" というフレーズが入っているものを選ぶ
-
-### 間違い2: 検索キーワードが短すぎる
-```
-❌ 「Calendar」で検索 → たくさん出てきて迷う
-✅ 「calendar information as the app」で検索 → 1つだけ出る
-```
-
-### 間違い3: 保存を忘れる
-```
-❌ チェックだけして画面を閉じる
-✅ 必ず「保存」または「Save」ボタンをクリック
-```
+**注:** UI表示は言語設定やLarkのバージョンによって変わる可能性があります。
 
 ---
 
-## 🎓 権限の意味
+## ⚠️ よくある問題
 
-### 1. 以应用身份读取日历信息
-- カレンダーのイベント一覧を取得
-- 空き時間を検出するために必要
+### Q1: スコープが見つからない
 
-### 2. 获取与发送单聊、群组消息
-- チャットメッセージの送受信
-- 結果をチャットに送るために必要
+**A:** Developer Consoleの検索機能を使ってください:
+- "calendar" で検索 → カレンダー関連の権限が表示される
+- "message" で検索 → メッセージ関連の権限が表示される
+- "bot" で検索 → Bot関連の権限が表示される
 
-### 3. 以应用的身份发送消息
-- アプリ名義でメッセージ送信
-- Bot送信に必要
+### Q2: 保存したのに権限が反映されない
 
----
+**A:** 以下を確認:
+1. ページをリロードしてチェックが入っているか確認
+2. アプリのバージョンを作成して公開する必要がある場合があります
+3. 「版本管理与发布」から新バージョンを作成
 
-## 📸 画面イメージ
+### Q3: APIコール時に "insufficient permissions" エラー
 
-### 🇺🇸 英語版Lark の場合
-
-```
-┌──────────────────────────────────────────────────┐
-│ [Search permissions...]                          │ ← 検索ボックス
-├──────────────────────────────────────────────────┤
-│                                                  │
-│ Calendar                                         │
-│   ☐ View and comment on events                  │
-│   ☑ Access calendar and schedule information    │ ← チェック！
-│       as the app                                 │
-│   ☐ View, create, and edit events               │
-│                                                  │
-│ Messaging                                        │
-│   ☑ Obtain and send messages in private and     │ ← チェック！
-│       group chats                                │
-│   ☑ Send messages as the app                    │ ← チェック！
-│                                                  │
-└──────────────────────────────────────────────────┘
-                                           [Save] ← クリック！
-```
-
-### 🇨🇳 中国語版Feishu の場合
-
-```
-┌─────────────────────────────────────────┐
-│ [搜索权限...]                           │ ← 検索ボックス
-├─────────────────────────────────────────┤
-│                                         │
-│ 日历                                    │
-│   ☐ 查看、评论日程                      │
-│   ☑ 以应用身份读取日历信息              │ ← チェック！
-│   ☐ 查看、创建、编辑日程                │
-│                                         │
-│ 消息与群组                              │
-│   ☑ 获取与发送单聊、群组消息            │ ← チェック！
-│   ☑ 以应用的身份发送消息                │ ← チェック！
-│                                         │
-└─────────────────────────────────────────┘
-                                    [保存] ← クリック！
-```
+**A:** 以下を確認:
+1. 必要な3つのスコープすべてにチェックが入っているか
+2. アプリが公開されているか
+3. `.env` ファイルの `LARK_APP_ID` と `LARK_APP_SECRET` が正しいか
 
 ---
 
-## ✅ 設定完了の確認
+## 🎓 追加のスコープ（オプション）
 
-以下を確認してください：
+将来的に機能を拡張する場合、以下のスコープも有用です:
 
-- [ ] 3つの権限すべてにチェックが入っている
-- [ ] 「保存」ボタンをクリックした
-- [ ] ページをリロードしても3つともチェック済み
+### 複数人のカレンダー対応
+```
+calendar:calendar.event:readonly
+```
+- カレンダーイベントの詳細情報読み取り
+- 他のユーザーのカレンダー確認（権限があれば）
 
-全て完了したら .env に App ID と Secret を設定して `npm run dev` を実行！
+### グループチャット対応
+```
+im:message.group_at_msg:readonly
+```
+- グループでメンションされたメッセージの受信
+- メンション通知への応答
+
+### 画像・ファイル送信
+```
+im:resource
+```
+- 画像やファイルのアップロード・取得
+- リッチなメッセージカード送信
+
+---
+
+## ✅ 設定完了チェックリスト
+
+- [ ] `calendar:calendar:readonly` を設定
+- [ ] `im:message` を設定
+- [ ] `im:message:send_as_bot` を設定
+- [ ] 「保存」ボタンをクリック
+- [ ] ページリロードで3つともチェック済み確認
+- [ ] `.env` に App ID と Secret を設定
+- [ ] `npm run dev` でアプリが動作することを確認
+
+---
+
+## 📚 参考リンク
+
+- [Lark API スコープリスト (英語)](https://open.larksuite.com/document/ukTMukTMukTM/uYTM5UjL2ETO14iNxkTN/scope-list)
+- [Feishu API スコープリスト (中国語)](https://open.feishu.cn/document/server-docs/application-scope/scope-list)
+- [Lark Calendar API ドキュメント](https://open.larksuite.com/document/uAjLw4CM/ukTMukTMukTM/reference/calendar-v4)
+- [Lark Messaging API ドキュメント](https://open.larksuite.com/document/uAjLw4CM/ukTMukTMukTM/reference/im-v1)
+
+---
+
+全て完了したら `npm run dev` を実行してアプリを起動してください！
