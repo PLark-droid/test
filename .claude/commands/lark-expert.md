@@ -420,12 +420,35 @@ GET    /open-apis/calendar/v4/calendars                     # カレンダー一
 | Drive ファイル操作 | 100 回/秒 | テナント |
 | Token 取得 | 制限あり (キャッシュ推奨) | — |
 
+#### Custom Bot の制限
+
+- **5リクエスト/秒** かつ **100リクエスト/分** (テナント・ボット単位)
+- App Bot よりも厳しいため、大量送信には App Bot を推奨
+
+#### Rate Limit レスポンスヘッダー
+
+```
+HTTP/1.1 429 Too Many Requests
+x-ogw-ratelimit-limit: 100     // ウィンドウ上限 (秒)
+x-ogw-ratelimit-reset: 52      // リセットまでの秒数
+
+{
+  "code": 99991400,
+  "msg": "request trigger frequency limit"
+}
+```
+
+**注意**: 一部の古い API は 429 ではなく HTTP 400 を返す。`code: 99991400` をレスポンスボディで確認すること。
+
 #### レート制限対策
 
-- **429 Too Many Requests** 受信時 → Exponential Backoff で再試行
+- **429 受信時** → `x-ogw-ratelimit-reset` ヘッダーの秒数だけ待機 → 再試行
+- **Exponential Backoff with Jitter** 実装推奨
 - **トークンはキャッシュ**: 2時間の有効期限内は再取得不要
 - **バッチ API を活用**: `batch_create`, `batch_update` で呼出回数削減
 - **Webhook/イベント活用**: ポーリングの代わりにイベント購読
+- **時刻を避ける**: 10:00, 17:30 等のキリ時間はシステム負荷が高く、エラーコード 11232 が出やすい
+- **制限引き上げ**: セルフサービスでは不可。CSM (Customer Success Manager) に連絡が必要
 
 ### 12. Webhook & イベントコールバック
 
@@ -652,6 +675,44 @@ npx @larksuiteoapi/lark-mcp@latest -a <APP_ID> -s <APP_SECRET> \
 3. **Lark Flow**: Webhook トリガーで DB 変更を受信 → Bitable に書込
 4. **MCP 経由**: Claude Code の MCP で Bitable 操作を自動化
 5. 「リアルタイム性、データ量、技術スタックに応じて最適な方法が変わります。要件を教えてください。」
+
+### パターン 6: 「サードパーティ承認統合」
+
+**例**: 外部システムの承認プロセスを Lark の承認センターに統合したい
+
+**解決ステップ**:
+1. `external_approval` API で外部承認定義を作成
+2. 外部システムのイベントを Webhook で受信
+3. Lark の承認センターにインスタンスを同期
+4. ユーザーは Lark 上で外部承認も一元管理
+5. 「Lark の承認センターにカードとして表示されますが、承認アクション自体は外部システムで処理する形になります。許容できますか?」
+
+### パターン 7: 「MCP でドキュメント編集したい」
+
+**例**: Claude Code から MCP 経由でドキュメントを直接編集したい
+
+**現状の制約**: MCP ツールではドキュメントのインポート・読み取りのみ対応。直接編集は未対応。
+
+**代替案**:
+1. **DocX API 直接呼出**: `PATCH /open-apis/docx/v1/documents/{id}/blocks/{block_id}` でブロック単位の更新
+2. **Sheets/Bitable 経由**: 構造化データなら Sheets/Bitable API で MCP 対応済み
+3. **新規ドキュメント作成**: 編集ではなく `POST /open-apis/docx/v1/documents` で新規作成してコンテンツを構築
+4. 「現時点で MCP 経由の直接編集はできませんが、API 直接呼出のコードを生成してスクリプト化できます。試しますか?」
+
+## 既知の制限事項と回避策
+
+| 制限事項 | 回避策 |
+|---------|-------|
+| Custom Bot: 5 req/s, 100 req/min | App Bot に移行 or メッセージキューイング |
+| Sheets 読取: 1回 10MB 上限 | 範囲を分割して複数リクエスト |
+| Sheets 挿入: 1回 5,000 行/列 上限 | バッチを分割 |
+| WebSocket イベント: 3秒タイムアウト | 重い処理はキューに積み、即座に ACK |
+| user_access_token: 2時間で失効 | refresh_token フロー実装 (SDK は自動対応) |
+| 一部古い API が 429 でなく 400 返却 | レスポンスボディの code: 99991400 で判定 |
+| MCP でドキュメント直接編集不可 | DocX API を直接呼出 |
+| Rate Limit セルフサービス引上げ不可 | CSM に連絡 |
+| Feishu/Lark 間の API 完全互換は保証なし | ターゲットプラットフォームで必ずテスト |
+| Lark Gadget (MiniApp) は Lark 内でのみ動作 | Web App (H5) なら外部ブラウザでも動作 |
 
 ## 質問への応答テンプレート
 
