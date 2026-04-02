@@ -1,25 +1,39 @@
 import SwiftUI
 
-struct PointerOverlayView: View {
+struct DemoView: View {
     @ObservedObject var settings: PointerSettings
-    @Environment(\.dismiss) private var dismiss
+    let screenshots: [UIImage]
 
+    @Environment(\.dismiss) private var dismiss
+    @State private var currentPage: Int = 0
+
+    // タッチ状態
     @State private var touchLocation: CGPoint? = nil
     @State private var isTouching = false
     @State private var ripples: [RippleInfo] = []
 
-    // 軌跡トラッキング
+    // 軌跡
     @State private var currentTrailPoints: [CGPoint] = []
     @State private var completedTrails: [GestureTrail] = []
     @State private var dragStartTime: Date? = nil
-    @State private var dragStartLocation: CGPoint? = nil
 
-    // ガイド表示
-    @State private var showGuide = true
+    // UI
+    @State private var showControls = true
 
     var body: some View {
         ZStack {
-            // 全画面タッチエリア（透明）
+            // 背景を黒に
+            Color.black.ignoresSafeArea()
+
+            // スクリーンショット or 空白画面
+            if !screenshots.isEmpty {
+                Image(uiImage: screenshots[currentPage])
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .ignoresSafeArea()
+            }
+
+            // タッチ検出レイヤー（全画面）
             Color.clear
                 .contentShape(Rectangle())
                 .gesture(
@@ -27,31 +41,31 @@ struct PointerOverlayView: View {
                         .onChanged { value in
                             touchLocation = value.location
                             isTouching = true
+                            showControls = false
 
-                            // ガイド非表示
-                            if showGuide {
-                                withAnimation { showGuide = false }
-                            }
-
-                            // 軌跡記録開始
                             if dragStartTime == nil {
                                 dragStartTime = Date()
-                                dragStartLocation = value.startLocation
                             }
                             currentTrailPoints.append(value.location)
                         }
                         .onEnded { value in
-                            let endLocation = value.location
-
-                            // ジェスチャー判定
                             let gestureType = detectGesture(
                                 start: value.startLocation,
-                                end: endLocation,
+                                end: value.location,
                                 duration: Date().timeIntervalSince(dragStartTime ?? Date()),
                                 pointCount: currentTrailPoints.count
                             )
 
-                            // 軌跡を保存（タップ以外）
+                            // スワイプでページ切り替え
+                            if !screenshots.isEmpty {
+                                if gestureType == .swipeLeft && currentPage < screenshots.count - 1 {
+                                    withAnimation { currentPage += 1 }
+                                } else if gestureType == .swipeRight && currentPage > 0 {
+                                    withAnimation { currentPage -= 1 }
+                                }
+                            }
+
+                            // 軌跡保存
                             if gestureType != .tap && currentTrailPoints.count >= 2 {
                                 let trail = GestureTrail(
                                     points: simplifyPoints(currentTrailPoints),
@@ -59,24 +73,20 @@ struct PointerOverlayView: View {
                                     startTime: dragStartTime ?? Date()
                                 )
                                 completedTrails.append(trail)
-
-                                // 古い軌跡を自動削除
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
                                     completedTrails.removeAll { $0.id == trail.id }
                                 }
                             }
 
-                            // リップルエフェクト（タップ時）
+                            // リップル
                             if settings.showRipple && gestureType == .tap {
-                                addRipple(at: endLocation)
+                                addRipple(at: value.location)
                             }
 
                             // リセット
                             currentTrailPoints = []
                             dragStartTime = nil
-                            dragStartLocation = nil
 
-                            // ポインターをフェードアウト
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                                 withAnimation(.easeOut(duration: 0.3)) {
                                     isTouching = false
@@ -85,7 +95,7 @@ struct PointerOverlayView: View {
                         }
                 )
 
-            // 完了した軌跡の描画
+            // 軌跡描画
             ForEach(completedTrails) { trail in
                 TrailPathView(
                     trail: trail,
@@ -94,7 +104,7 @@ struct PointerOverlayView: View {
                 )
             }
 
-            // ドラッグ中の軌跡（リアルタイム）
+            // リアルタイム軌跡
             if isTouching && currentTrailPoints.count >= 2 {
                 TrailShape(points: currentTrailPoints)
                     .stroke(
@@ -105,17 +115,9 @@ struct PointerOverlayView: View {
                             lineJoin: .round
                         )
                     )
-
-                // ドット（軌跡上に点を表示）
-                ForEach(Array(stride(from: 0, to: currentTrailPoints.count, by: max(1, currentTrailPoints.count / 8))), id: \.self) { i in
-                    Circle()
-                        .fill(settings.selectedColor.color.opacity(0.3))
-                        .frame(width: 8, height: 8)
-                        .position(currentTrailPoints[i])
-                }
             }
 
-            // リップルエフェクト
+            // リップル
             ForEach(ripples) { ripple in
                 RippleView(color: settings.selectedColor.color, size: settings.pointerSize)
                     .position(ripple.location)
@@ -129,49 +131,106 @@ struct PointerOverlayView: View {
                     .animation(.interactiveSpring(response: 0.05), value: location.y)
             }
 
-            // 操作ガイド
+            // コントロールバー
             VStack {
-                HStack {
-                    Button(action: { dismiss() }) {
-                        HStack(spacing: 4) {
-                            Image(systemName: "chevron.left")
-                            Text("設定に戻る")
-                        }
-                        .font(.caption)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(20)
-                    }
-                    Spacer()
-                }
-                .padding(.horizontal)
-                .padding(.top, 60)
-
-                if showGuide {
-                    Spacer()
-                    VStack(spacing: 12) {
-                        Image(systemName: "hand.draw")
-                            .font(.system(size: 48))
-                            .foregroundColor(.secondary)
-                        Text("画面をタッチ・スワイプしてください")
-                            .font(.callout)
-                            .foregroundColor(.secondary)
-                        Text("ジェスチャーが自動で検出・表示されます")
+                if showControls {
+                    HStack {
+                        Button {
+                            dismiss()
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "chevron.left")
+                                Text("戻る")
+                            }
                             .font(.caption)
-                            .foregroundColor(.secondary.opacity(0.7))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(.ultraThinMaterial)
+                            .cornerRadius(20)
+                        }
+
+                        Spacer()
+
+                        if !screenshots.isEmpty {
+                            Text("\(currentPage + 1) / \(screenshots.count)")
+                                .font(.caption)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(.ultraThinMaterial)
+                                .cornerRadius(20)
+                        }
+
+                        Spacer()
+
+                        // 画面収録の説明
+                        Button {
+                            // コントロール非表示
+                            showControls = false
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "record.circle")
+                                Text("非表示")
+                            }
+                            .font(.caption)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(.ultraThinMaterial)
+                            .cornerRadius(20)
+                        }
                     }
-                    .padding()
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(16)
-                    Spacer()
+                    .padding(.horizontal)
+                    .padding(.top, 60)
                 }
 
                 Spacer()
+
+                // ページ切り替えボタン（複数枚の場合）
+                if showControls && screenshots.count > 1 {
+                    HStack(spacing: 20) {
+                        Button {
+                            if currentPage > 0 {
+                                withAnimation { currentPage -= 1 }
+                            }
+                        } label: {
+                            Image(systemName: "chevron.left.circle.fill")
+                                .font(.title)
+                                .foregroundColor(.white)
+                                .shadow(radius: 3)
+                        }
+                        .opacity(currentPage > 0 ? 1 : 0.3)
+
+                        // ページドット
+                        HStack(spacing: 6) {
+                            ForEach(0..<screenshots.count, id: \.self) { i in
+                                Circle()
+                                    .fill(i == currentPage ? Color.white : Color.white.opacity(0.4))
+                                    .frame(width: 8, height: 8)
+                            }
+                        }
+
+                        Button {
+                            if currentPage < screenshots.count - 1 {
+                                withAnimation { currentPage += 1 }
+                            }
+                        } label: {
+                            Image(systemName: "chevron.right.circle.fill")
+                                .font(.title)
+                                .foregroundColor(.white)
+                                .shadow(radius: 3)
+                        }
+                        .opacity(currentPage < screenshots.count - 1 ? 1 : 0.3)
+                    }
+                    .padding(.bottom, 40)
+                }
             }
         }
         .navigationBarHidden(true)
         .ignoresSafeArea()
+        .statusBarHidden(true)
+        .onTapGesture(count: 3) {
+            // トリプルタップでコントロール表示/非表示
+            showControls.toggle()
+        }
     }
 
     // MARK: - ジェスチャー検出
@@ -181,20 +240,14 @@ struct PointerOverlayView: View {
         let dy = end.y - start.y
         let distance = sqrt(dx * dx + dy * dy)
 
-        // タップ判定: 移動距離が小さく短時間
         if distance < 15 && duration < 0.3 {
             return .tap
         }
-
-        // 長押し判定: 移動距離が小さく長時間
         if distance < 15 && duration >= 0.5 {
             return .longPress
         }
-
-        // スワイプ判定: 移動距離が大きく短〜中時間
         if distance >= 50 {
             let angle = atan2(dy, dx)
-            // 水平方向のスワイプ
             if abs(angle) < .pi / 4 {
                 return .swipeRight
             } else if abs(angle) > 3 * .pi / 4 {
@@ -205,11 +258,8 @@ struct PointerOverlayView: View {
                 return .swipeDown
             }
         }
-
         return .drag
     }
-
-    // MARK: - 軌跡の簡略化（ポイント数を減らす）
 
     private func simplifyPoints(_ points: [CGPoint]) -> [CGPoint] {
         guard points.count > 20 else { return points }
@@ -224,40 +274,11 @@ struct PointerOverlayView: View {
         return simplified
     }
 
-    // MARK: - リップル
-
     private func addRipple(at location: CGPoint) {
         let ripple = RippleInfo(location: location)
         ripples.append(ripple)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
             ripples.removeAll { $0.id == ripple.id }
         }
-    }
-}
-
-// MARK: - リップル
-
-struct RippleInfo: Identifiable {
-    let id = UUID()
-    let location: CGPoint
-}
-
-struct RippleView: View {
-    let color: Color
-    let size: CGFloat
-
-    @State private var scale: CGFloat = 1.0
-    @State private var opacity: Double = 0.6
-
-    var body: some View {
-        Circle()
-            .stroke(color.opacity(opacity), lineWidth: 2)
-            .frame(width: size * scale, height: size * scale)
-            .onAppear {
-                withAnimation(.easeOut(duration: 0.5)) {
-                    scale = 3.0
-                    opacity = 0.0
-                }
-            }
     }
 }

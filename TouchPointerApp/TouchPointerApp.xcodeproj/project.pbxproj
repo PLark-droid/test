@@ -11,7 +11,7 @@
 		A10002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20002; };
 		A10003 /* PointerSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20003; };
 		A10004 /* PointerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20004; };
-		A10005 /* PointerOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20005; };
+		A10005 /* DemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20005; };
 		A10006 /* GestureTrailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20006; };
 		A10007 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20007; };
 /* End PBXBuildFile section */
@@ -21,7 +21,7 @@
 		A20002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A20003 /* PointerSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointerSettings.swift; sourceTree = "<group>"; };
 		A20004 /* PointerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointerView.swift; sourceTree = "<group>"; };
-		A20005 /* PointerOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointerOverlayView.swift; sourceTree = "<group>"; };
+		A20005 /* DemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoView.swift; sourceTree = "<group>"; };
 		A20006 /* GestureTrailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureTrailView.swift; sourceTree = "<group>"; };
 		A20007 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A30001 /* TouchPointerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TouchPointerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -53,7 +53,7 @@
 				A20002 /* ContentView.swift */,
 				A20003 /* PointerSettings.swift */,
 				A20004 /* PointerView.swift */,
-				A20005 /* PointerOverlayView.swift */,
+				A20005 /* DemoView.swift */,
 				A20006 /* GestureTrailView.swift */,
 				A20007 /* Assets.xcassets */,
 			);
@@ -142,7 +142,7 @@
 				A10002 /* ContentView.swift in Sources */,
 				A10003 /* PointerSettings.swift in Sources */,
 				A10004 /* PointerView.swift in Sources */,
-				A10005 /* PointerOverlayView.swift in Sources */,
+				A10005 /* DemoView.swift in Sources */,
 				A10006 /* GestureTrailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -160,6 +160,7 @@
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Touch Pointer";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Lark等のアプリのスクリーンショットを読み込むために写真ライブラリへのアクセスが必要です";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -189,6 +190,7 @@
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Touch Pointer";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Lark等のアプリのスクリーンショットを読み込むために写真ライブラリへのアクセスが必要です";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
